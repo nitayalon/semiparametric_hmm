@@ -1,0 +1,15 @@
+default:
+  em_iteration: 100
+  pseudoCount: 0.00001
+  delta: 1e-5 
+  grid_length: 20 
+  varEpsilon: 1e-2
+  maxTheta: 0.4
+  minTheta: 0
+  gridStepForGradient: 5e-2
+  gridStepForHessian: 1e-2
+  pStepSize: 0.3
+  thetaStepSize: 0.3
+  fineGridWidth: 0.24
+  fineGridStepSize: 0.05
+

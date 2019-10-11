@@ -202,11 +202,12 @@ setGeneric(name = "getObservationsFromHMM",
 
 setMethod(f = "getObservationsFromHMM",
           signature = "HiddenMarkovModel",
-          definition = function(theObject,type = "Vector")
+          definition = function(theObject,type = c("Vector","Data.Frame"))
           {
-            obs <- switch (type,
-                           "Data.Frame" = data.frame(observation = theObject@observations$observations),
-                           "Vector" = theObject@observations$observations
+            type_of_data = match.arg(type)
+            obs <- switch (type_of_data,
+                           Data.frame = data.frame(observation = theObject@observations$observations),
+                           Vector = theObject@observations$observations
             )
             return(obs)
           })

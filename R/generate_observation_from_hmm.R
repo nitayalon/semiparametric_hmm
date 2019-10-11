@@ -189,8 +189,7 @@ setMethod(f = "sampleFromHMM",
                                       parameters_for_distribution =
                                         parameters_for_conditional_distribution,
                                       conditional_distribution_type = theObject@type)
-            theObject@observations <- obs
-            return(theObject)
+            return(obs)
           })
 
 # Get

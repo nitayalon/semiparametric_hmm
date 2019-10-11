@@ -45,9 +45,6 @@ NumericMatrix rcpp_RecursiveBaumWelch(NumericVector observations,
       {
         double j = forward_vector(i,x) + log(transitionMatrix(x,y)) +
           log(pointProbability(i+1,y)) + backward_vector(i+1,y);
-        // Rcout << "Iteration number " << i << std::endl;
-        // Rcout << "The value is " << j << std::endl;
-
         if(j > -std::numeric_limits<double>::infinity())
         {
           temp = j + log(1+exp(temp-j));

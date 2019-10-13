@@ -20,10 +20,10 @@ setGeneric(name = "getTheta",
            }
 )
 
-setMethod(f = "getTheta", 
-          signature = "HiddenMarkovModel", 
+setMethod(f = "getTheta",
+          signature = "HiddenMarkovModel",
           definition = function(theObject)
           {
-            return(theObject@theta)
+            return(theObject@sigma * theObject@epsilon)
           }
 )

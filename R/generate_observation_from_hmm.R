@@ -31,7 +31,7 @@ createTransitionMatrix <- function(s, t, p = NULL, check_input = T,
 
   first_row <- c(max(1 - s - t,0), s ,t)
   second_row <- c(q / 2 , 1 - q ,q / 2)
-  third_row <- rev(c(max(1 - s - t,0), s ,t))
+  third_row <- rev(first_row)
   transition_matrix <- matrix(c(first_row, second_row, third_row), nrow = 3, ncol = 3, byrow = T)
 
   return(transition_matrix)

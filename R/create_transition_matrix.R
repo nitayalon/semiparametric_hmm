@@ -13,18 +13,18 @@ setGeneric(name = "createTransitionMatrixForHMM",
            }
 )
 
-setMethod(f = "createTransitionMatrixForHMM", 
-          signature = "HiddenMarkovModel", 
+setMethod(f = "createTransitionMatrixForHMM",
+          signature = "HiddenMarkovModel",
           definition = function(theObject)
           {
-            if(any(c(theObject@t,theObject@s,theObject@p) < 0))     
+            if(any(c(theObject@t,theObject@s,theObject@p) < 0))
             {
-              cat("Transition probalities cannot be negative","\n")     
+              cat("Transition probalities cannot be negative","\n")
               return(theObject)
             }
-            if(any(c(theObject@t,theObject@s,theObject@p) > 1))     
+            if(any(c(theObject@t,theObject@s,theObject@p) > 1))
             {
-              cat("Transition probalities cannot exceed 1","\n")     
+              cat("Transition probalities cannot exceed 1","\n")
               return(theObject)
             }
             tryCatch(
@@ -50,18 +50,18 @@ setGeneric(name = "setTransitionMatrixForHMM",
            }
 )
 
-setMethod(f = "setTransitionMatrixForHMM", 
-          signature = "HiddenMarkovModel", 
+setMethod(f = "setTransitionMatrixForHMM",
+          signature = "HiddenMarkovModel",
           definition = function(theObject,transition_matrix)
           {
-            if(any(transition_matrix < 0))     
+            if(any(transition_matrix < 0))
             {
-              cat("Transition probalities cannot be negative","\n")     
+              cat("Transition probalities cannot be negative","\n")
               return(theObject)
             }
-            if(any(transition_matrix > 1))     
+            if(any(transition_matrix > 1))
             {
-              cat("Transition probalities cannot exceed 1","\n")     
+              cat("Transition probalities cannot exceed 1","\n")
               return(theObject)
             }
             tryCatch(
@@ -72,7 +72,7 @@ setMethod(f = "setTransitionMatrixForHMM",
               {
                 message("There's a problem with creating transition matrix")
                 message(cond)
-                return("NONONONONO")
+                return(NULL)
               }
             )
             return(theObject)
@@ -87,8 +87,8 @@ setGeneric(name = "getTransitionMatrix",
            }
 )
 
-setMethod(f = "getTransitionMatrix", 
-          signature = "HiddenMarkovModel", 
+setMethod(f = "getTransitionMatrix",
+          signature = "HiddenMarkovModel",
           definition = function(theObject)
           {
             return(theObject@transition_matrix)

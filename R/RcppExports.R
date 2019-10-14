@@ -2,38 +2,38 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 rcpp_computeAllProbabilities <- function(observations, theta, p, b) {
-    .Call('_semiparametrichmm_rcpp_computeAllProbabilities', PACKAGE = 'semiparametrichmm', observations, theta, p, b)
+    .Call(`_semiparametrichmm_rcpp_computeAllProbabilities`, observations, theta, p, b)
 }
 
 rcpp_backwardVector <- function(observations, transitionMatrix, theta, p, b) {
-    .Call('_semiparametrichmm_rcpp_backwardVector', PACKAGE = 'semiparametrichmm', observations, transitionMatrix, theta, p, b)
+    .Call(`_semiparametrichmm_rcpp_backwardVector`, observations, transitionMatrix, theta, p, b)
 }
 
 computeCentralDistribution <- function(x, theta, p, b) {
-    .Call('_semiparametrichmm_computeCentralDistribution', PACKAGE = 'semiparametrichmm', x, theta, p, b)
+    .Call(`_semiparametrichmm_computeCentralDistribution`, x, theta, p, b)
 }
 
 rcpp_forwardVector <- function(observations, transitionMatrix, theta, p, b) {
-    .Call('_semiparametrichmm_rcpp_forwardVector', PACKAGE = 'semiparametrichmm', observations, transitionMatrix, theta, p, b)
+    .Call(`_semiparametrichmm_rcpp_forwardVector`, observations, transitionMatrix, theta, p, b)
 }
 
 rcpp_computeNRDenom <- function(x, theta, p, b) {
-    .Call('_semiparametrichmm_rcpp_computeNRDenom', PACKAGE = 'semiparametrichmm', x, theta, p, b)
+    .Call(`_semiparametrichmm_rcpp_computeNRDenom`, x, theta, p, b)
 }
 
 rcpp_pointDensity <- function(x, theta, p, b, N) {
-    .Call('_semiparametrichmm_rcpp_pointDensity', PACKAGE = 'semiparametrichmm', x, theta, p, b, N)
+    .Call(`_semiparametrichmm_rcpp_pointDensity`, x, theta, p, b, N)
 }
 
 NewtonRaphson <- function(data, theta, p, max_iteration) {
-    .Call('_semiparametrichmm_NewtonRaphson', PACKAGE = 'semiparametrichmm', data, theta, p, max_iteration)
+    .Call(`_semiparametrichmm_NewtonRaphson`, data, theta, p, max_iteration)
 }
 
 optimizationTargetFunction <- function(x, theta, p, b) {
-    .Call('_semiparametrichmm_optimizationTargetFunction', PACKAGE = 'semiparametrichmm', x, theta, p, b)
+    .Call(`_semiparametrichmm_optimizationTargetFunction`, x, theta, p, b)
 }
 
 rcpp_RecursiveBaumWelch <- function(observations, transitionMatrix, theta, p, b) {
-    .Call('_semiparametrichmm_rcpp_RecursiveBaumWelch', PACKAGE = 'semiparametrichmm', observations, transitionMatrix, theta, p, b)
+    .Call(`_semiparametrichmm_rcpp_RecursiveBaumWelch`, observations, transitionMatrix, theta, p, b)
 }
 

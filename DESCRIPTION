@@ -13,7 +13,8 @@ LazyData: true
 Imports: 
   Rcpp,
   dplyr,
-  ggplot2
+  ggplot2,
+  config
 RoxygenNote: 6.1.1
 LinkingTo: 
     Rcpp

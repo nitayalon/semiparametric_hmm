@@ -1,42 +1,3 @@
-#' Create transition matrix for Semi-Parametric model
-#' @param s - Numeric
-#' @param t - Numeric
-#' @param p - Numeric, default null, the value of the stationary vector
-#' @param check_input - Logical, indicate if to check the caonstraints
-#' @param stationary_matrix - Logical, indicate if the transition matrix is assumed to by stationary
-#' @return transition matrix
-
-createTransitionMatrix <- function(s, t, p = NULL, check_input = T,
-                                   stationary_matrix = T){
-
-  #Input validation:
-  if(any(!is.numeric(c(s,t)))){stop("The input must be numeric")}
-
-  if(check_input){
-    if(any(c(s,t) > 1)){stop("The input must be less than 1")}
-    if(s + t > 1){
-      warning("s and t must sum to less than 1")
-      s <- s / (s + t)
-      t <- t / (s + t)
-    }
-  }
-
-  if(stationary_matrix)
-  {
-    stopifnot(p > 0 & p < 1)
-    s <- (1-p)/p * 0.01
-    q <- p/(1-p) * s
-    t = 0.02 - s
-  }
-
-  first_row <- c(max(1 - s - t,0), s ,t)
-  second_row <- c(q / 2 , 1 - q ,q / 2)
-  third_row <- rev(first_row)
-  transition_matrix <- matrix(c(first_row, second_row, third_row), nrow = 3, ncol = 3, byrow = T)
-
-  return(transition_matrix)
-}
-
 #' Generate samples of hidden states from HMM
 #' @param n_obs - Numeric
 #' @param transition_matrix - Matrix, transition matrix
@@ -164,14 +125,14 @@ sampleFromHMM <- function(n_obs,p,s,t,theta,sigma,type, stationarity = T)
 
 # Set
 
-setGeneric(name = "sampleFromHMM",
+setGeneric(name = "generateSampleFromHMM",
            def = function(theObject)
            {
-             standardGeneric("sampleFromHMM")
+             standardGeneric("generateSampleFromHMM")
            }
 )
 
-setMethod(f = "sampleFromHMM",
+setMethod(f = "generateSampleFromHMM",
           signature = "HiddenMarkovModel",
           definition = function(theObject)
           {
@@ -189,7 +150,9 @@ setMethod(f = "sampleFromHMM",
                                       parameters_for_distribution =
                                         parameters_for_conditional_distribution,
                                       conditional_distribution_type = theObject@type)
-            return(obs)
+            theObject@observations <- obs
+            return(list(hidden_markov_model_with_observations = theObject,
+                        observations = obs))
           })
 
 # Get

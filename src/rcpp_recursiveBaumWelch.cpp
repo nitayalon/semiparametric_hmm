@@ -20,7 +20,7 @@ NumericMatrix rcpp_RecursiveBaumWelch(NumericVector observations,
   Rcpp::NumericMatrix pointProbability =
     rcpp_computeAllProbabilities(observations, theta, p, b);
   Rcpp::NumericMatrix forward_vector = rcpp_forwardVector(observations, transitionMatrix,
-                                                    theta, p, b);
+                                                          theta, p, b);
   Rcpp::NumericMatrix backward_vector = rcpp_backwardVector(observations, transitionMatrix,
                                                     theta, p, b);
   double probObservations = forward_vector((nObservations-1),0);

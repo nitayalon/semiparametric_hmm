@@ -14,7 +14,8 @@ Imports:
   Rcpp,
   dplyr,
   ggplot2,
-  config
+  config,
+  pbapply
 RoxygenNote: 6.1.1
 LinkingTo: 
     Rcpp

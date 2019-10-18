@@ -223,5 +223,20 @@ setMethod(f = "getTransitionMatrix",
           }
 )
 
+setGeneric(name="plotHmmData",
+           def=function(theObject)
+           {
+             standardGeneric("plotHmmData")
+           }
+)
+
+setMethod(f="plotHmmData",
+          signature="HiddenMarkovModel",
+          definition=function(theObject)
+          {
+            return(NULL)
+          }
+)
+
 
 

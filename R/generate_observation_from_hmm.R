@@ -111,7 +111,6 @@ sampleFromHMM <- function(n_obs,p,s,t,theta,sigma,type, stationarity = T)
   probs_matrix_params = c(s,t)
   parameters_for_conditional_distribution =
     data.frame(mu = c(-theta,0,theta), sigma = rep(sigma,3))
-
   obs <- createObservations(n_obs,
                             init_probs,
                             p,
@@ -141,7 +140,8 @@ setMethod(f = "generateSampleFromHMM",
             probs_matrix_params = c(theObject@s,theObject@t)
             parameters_for_conditional_distribution =
               data.frame(mu = c(-theObject@epsilon * theObject@sigma
-                                ,0,theObject@epsilon * theObject@sigma), sigma = rep(theObject@sigma,3))
+                                ,0,theObject@epsilon * theObject@sigma),
+                         sigma = rep(theObject@sigma,3))
             obs <- createObservations(theObject@n_obs,
                                       probs_matrix_params = probs_matrix_params,
                                       theObject@p,

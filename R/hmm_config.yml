@@ -1,7 +1,7 @@
 default:
-  em_iteration: 1000
+  em_iteration: 500
   NRiteration: 500
-  pseudoCount: 0.00001
+  pseudoCount: 0.001
   delta: 1e-5
   grid_length: 20
   varEpsilon: 1e-2

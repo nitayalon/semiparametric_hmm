@@ -19,18 +19,18 @@ baumWelchRecursion = function(current_transition_matrix,
                                                   current_transition_matrix,
                                                   theta,p,b)
 
-  constrained_bw_results <- constranedBaumWelchSolver(bw_transition_matrix,observations,
+  constrained_bw_results <- constrainedBaumWelchSolver(bw_transition_matrix,observations,
                                                       theta,p,b,config_file$pseudoCount)
 
-  updated_hmm <- setTransitionMatrixForHMM(hmm_object,constrained_bw_results$bw_transition_matrix)
-  updated_forward <- forward(updated_hmm)
-  non_normalized_llk <- updated_forward[,length(observation)]
+  updated_forward <- rcpp_forwardVector(observations,
+                                        constrained_bw_results$bw_transition_matrix,
+                                        theta, p, b)
+  non_normalized_llk <- updated_forward[length(observations),]
   average_llk <- mean(non_normalized_llk)
   delta_llk <- non_normalized_llk - average_llk
   llk <- average_llk + log(sum(exp(delta_llk)))
   return(
-    list(updated_hmm = updated_hmm,
-         updated_transition_matrix = constrained_bw_results$bw_transition_matrix,
+    list(updated_transition_matrix = constrained_bw_results$bw_transition_matrix,
          llk = llk,
          s_value = constrained_bw_results$s,
          t_value = constrained_bw_results$t,

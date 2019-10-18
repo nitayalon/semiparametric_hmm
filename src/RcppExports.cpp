@@ -78,7 +78,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_pointDensity
-double rcpp_pointDensity(double x, double theta, double p, double b, int N);
+double rcpp_pointDensity(double x, double theta, double p, double b, double N);
 RcppExport SEXP _semiparametrichmm_rcpp_pointDensity(SEXP xSEXP, SEXP thetaSEXP, SEXP pSEXP, SEXP bSEXP, SEXP NSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -87,7 +87,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< double >::type p(pSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< double >::type N(NSEXP);
     rcpp_result_gen = Rcpp::wrap(rcpp_pointDensity(x, theta, p, b, N));
     return rcpp_result_gen;
 END_RCPP

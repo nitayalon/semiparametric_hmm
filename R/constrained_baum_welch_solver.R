@@ -8,7 +8,7 @@
 #' @return MLE for transition matrix
 
 
-constranedBaumWelchSolver <- function(bw_transition_matrix,observations,
+constrainedBaumWelchSolver <- function(bw_transition_matrix,observations,
                                       theta,p,b,pseudo_count)
   {
   polynom_coefficients <- computePolynomCoefficients(bw_transition_matrix,p)
@@ -36,7 +36,7 @@ constranedBaumWelchSolver <- function(bw_transition_matrix,observations,
                                     ncol = 3, nrow = 3, byrow = T)
     f_min = rcpp_forwardVector(observations,transition_matrix_min,
                                theta,p,b)
-    non_normalized_llk_min = f_min[,length(observation)]
+    non_normalized_llk_min = t(f_min)[,length(observations)]
     average_min_llk <- mean(non_normalized_llk_min)
     delta_min_llk <- non_normalized_llk_min - average_min_llk
     llk_min <- average_min_llk + log(sum(exp(delta_min_llk)))
@@ -51,7 +51,7 @@ constranedBaumWelchSolver <- function(bw_transition_matrix,observations,
                                     ncol = 3, nrow = 3, byrow = T)
     f_max = rcpp_forwardVector(observations,transition_matrix_max,
                                theta,p,b)
-    non_normalized_llk_max = f_max[,length(observation)]
+    non_normalized_llk_max = t(f_max)[,length(observations)]
     average_max_llk <- mean(non_normalized_llk_max)
     delta_max_llk <- non_normalized_llk_max - average_max_llk
     llk_max <- average_max_llk + log(sum(exp(delta_max_llk)))

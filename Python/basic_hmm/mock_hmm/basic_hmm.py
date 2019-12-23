@@ -1,6 +1,6 @@
 import numpy as np
-from Python.basic_hmm.generate_samples_from_laplace import sample_from_laplace
-from Python.basic_hmm.generate_samples_from_gaussian import sample_from_gaussian
+from basic_hmm.mock_hmm import generate_samples_from_laplace
+from basic_hmm.mock_hmm import generate_samples_from_gaussian
 
 
 class BasicHMM:
@@ -41,11 +41,11 @@ class BasicHMM:
         observations = np.empty(n)
         for i in range(0, n):
             if self.emission_density == 'laplace':
-                obs = sample_from_laplace(1, self.theta_parameter[int(hidden_sequence[i])])
+                obs = generate_samples_from_laplace.sample_from_laplace(1, self.theta_parameter[int(hidden_sequence[i])])
             elif self.emission_density == 'gaussian':
-                obs = sample_from_gaussian(1, self.theta_parameter[int(hidden_sequence[i])])
+                obs = generate_samples_from_gaussian.sample_from_gaussian(1, self.theta_parameter[int(hidden_sequence[i])])
             else:
-                obs = sample_from_gaussian(1, self.theta_parameter[int(hidden_sequence[i])])
+                obs = generate_samples_from_gaussian.sample_from_gaussian(1, self.theta_parameter[int(hidden_sequence[i])])
             observations[i] = obs
         return observations
 
@@ -56,8 +56,8 @@ class BasicHMM:
         self.observations = observation
         return observation
 
-if __name__ == "__main__":
-    hmm = BasicHMM(3, 0.01, 0.05, 2 / 3, [1 / 3, 1 / 3, 1 / 3], emission_density='laplace')
-    print(hmm.generate_observation(1500))
+# if __name__ == "__main__":
+#     hmm = BasicHMM(3, 0.01, 0.05, 2 / 3, [1 / 3, 1 / 3, 1 / 3], emission_density='laplace')
+#     print(hmm.generate_observation(1500))
 
 

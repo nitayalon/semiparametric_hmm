@@ -6,4 +6,4 @@ hmm = basic_hmm.BasicHMM(3, 0.01, 0.05, 2 / 3, [1 / 3, 1 / 3, 1 / 3], emission_d
 
 forward_vec = forward.Forward(hmm.observations, hmm.n_states, hmm.transition_matrix, hmm.theta_parameter, hmm.q / 2)
 backward_vec = backward.Backward(hmm.observations, hmm.n_states, hmm.transition_matrix, hmm.theta_parameter, hmm.q / 2)
-backward_vec.backward_vector()
+print(forward_vec.compute_normalized_llk())

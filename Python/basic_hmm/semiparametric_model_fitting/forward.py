@@ -28,3 +28,9 @@ class Forward:
                 forward_vector[k, state] = np.log(self.all_probabilities[k, state]) + logsum
         return forward_vector
 
+    def compute_normalized_llk(self):
+        forward_vec = self.forward_vector()
+        llk_vector = forward_vec[forward_vec.shape[0]-1]
+        average_llk = np.mean(llk_vector)
+        delta_max_llk = llk_vector - average_llk
+        return average_llk + np.log(np.sum(np.exp(delta_max_llk)))

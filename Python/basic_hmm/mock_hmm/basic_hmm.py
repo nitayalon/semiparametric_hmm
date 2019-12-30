@@ -7,7 +7,8 @@ class BasicHMM:
 
     def __init__(self, n_states, s, t, q, initial_vector,
                  theta_parameter=0.05,
-                 emission_density=None):
+                 emission_density=None,
+                 sample=False):
         if emission_density is None:
             emission_density = 'normal'
         self.n_states = n_states
@@ -20,6 +21,8 @@ class BasicHMM:
         self.transition_matrix = self.create_transition_matrix()
         self.hidden_state = []
         self.observations = []
+        if sample:
+            self.observations = self.generate_observation(10000)
 
     def create_transition_matrix(self):
         first_row = [np.max(1 - self.s - self.t), self.s, self.t]

@@ -4,7 +4,7 @@ from basic_hmm.semiparametric_model_fitting import compute_central_distribution
 import numpy as np
 
 
-class RecursiveBaumWelch():
+class RecursiveBaumWelch:
 
     def __init__(self, observations, theta, p, initial_matrix):
         self.observations = observations
@@ -17,31 +17,31 @@ class RecursiveBaumWelch():
 
     def compute_polynom_coefficients(self, intermediate_transition_matrix):
         alpha = self.p / (1 - self.p)
-        a1 = intermediate_transition_matrix[1, 2] + intermediate_transition_matrix[3, 2] + intermediate_transition_matrix[2, 1] + intermediate_transition_matrix[2, 3]
-        a2 = intermediate_transition_matrix[1, 1] + intermediate_transition_matrix[3, 3]
-        a3 = intermediate_transition_matrix[2, 2]
-        b1 = intermediate_transition_matrix[3, 1] + intermediate_transition_matrix[1, 3]
-        b2 = intermediate_transition_matrix[1, 1] + intermediate_transition_matrix[3, 3]
-        return [a1, a2, a3, b1, b2, alpha]
+        a1 = intermediate_transition_matrix[0, 1] + intermediate_transition_matrix[2, 1] + \
+             intermediate_transition_matrix[1, 0] + intermediate_transition_matrix[1, 2]
+        a2 = intermediate_transition_matrix[0, 0] + intermediate_transition_matrix[2, 2]
+        a3 = intermediate_transition_matrix[1, 1]
+        a4 = intermediate_transition_matrix[2, 0] + intermediate_transition_matrix[0, 2]
+        return [a1, a2, a3, a4,alpha]
 
     def solve_for_s(self, polynom_coefficients):
-        A1, A2, A3, B1, B2, alpha = polynom_coefficients
+        a1, a2, a3, a4, alpha = polynom_coefficients
         upper_limit = np.min([1, 1/alpha])
-        P1 = A1 + A2 + A3 - (A1 * B1 + A3 * B1) / (B1 + B2)
-        P2 = A1 / alpha - A1 + A1 * B1 / (alpha * (B1 + B2)) + A1 * B1 / (B1 + B2) - \
-        A2 / alpha - A3 + A1 * B1 / (B1 + B2)
-        P3 = A1 / alpha - A1 * B1 * (1 / (alpha * (B1 + B2)) + 1 / ((B1 + B2)))
-        discreminante = P2 ^ 2 - 4 * P1 * P3
-        if discreminante < 0:
-            return 0
-        solutions = [(-P2 - np.sqrt(P2 ** 2 - 4 * P1 * P3)) / (2 * P1), (P2 - np.sqrt(P2 ** 2 - 4 * P1 * P3)) / (2 * P1)]
+        ratio = a4 / (a3 + a4)
+        A = (alpha - alpha* ratio) * a1 + (ratio - 1)*a2 + alpha * a3
+        B = (alpha * (ratio - 1) + (ratio - 1)) * a1 + (1- ratio) * a2 - a3
+        C = (1-ratio) * a1
+        discriminante = B ** 2 - 4 * A * C
+        if discriminante < 0:
+            return np.array([0])
+        solutions = np.array([[(-B - np.sqrt(discriminante)) / (2 * A)], [(B - np.sqrt(discriminante)) / (2 * A)]])
         if all(solutions < 0):
-            return 0
+            return np.array([0])
         if all(solutions > upper_limit):
-            return upper_limit
+            return np.array([upper_limit])
         if any(solutions < upper_limit) and any(solutions > 0):
             return self.find_feasible_solution(solutions, upper_limit)
-        return 0.5
+        return np.array([0.5])
 
     def find_feasible_solution(self, solution_vector, upper_limit):
         if all(solution > 0 for solution in solution_vector) and \
@@ -53,15 +53,17 @@ class RecursiveBaumWelch():
         return feasible_value
 
     def solve_for_t(self, feasible_s_value, polynom_coefficients):
-        A1, A2, A3, B1, B2, alpha = polynom_coefficients
+        a1, a2, a3, a4, alpha = polynom_coefficients
         epsilon = 0.01
-        B1 = B1 + epsilon
-        P4 = B1 / (B1 + B2)
-        current_value = (1 - feasible_s_value) * P4
+        a4 = a4 + epsilon
+        ratio  = a4 / (a3 + a4)
+        current_value = (1 - feasible_s_value) * ratio
+        if all(feasible_s_value == 0):
+            return ratio
         if all(current_value <= 0):
-            return 0
+            return np.array([0])
         if all(current_value >= 1):
-            return 1
+            return np.array([1])
         return current_value[(current_value > 0) & (current_value < 1)]
 
     def find_optimal_transition_matrix(self,s,t):
@@ -79,6 +81,8 @@ class RecursiveBaumWelch():
     def create_transition_matrix(self, s, t, q):
         transition_matrix = np.array([1 - s - t, s, t, q / 2, 1 - q, q / 2, t, s, 1 - s - t])
         transition_matrix = transition_matrix.reshape([3, 3])
+        transition_matrix = transition_matrix + 1e-4
+        transition_matrix = transition_matrix / np.sum(transition_matrix, axis=1)
         forward_vector = forward.Forward(self.observations, self.transition_matrix_dim, transition_matrix, self.theta, self.p)
         llk = forward_vector.compute_normalized_llk()
         return transition_matrix, llk, s, t, forward_vector
@@ -90,22 +94,22 @@ class RecursiveBaumWelch():
         forward_vector = forward_function.forward_vector()
         backward_vector = backward_function.backward_vector()
         transition_matrix = np.zeros(self.initial_matrix.shape)
-        all_probabilities = central_density.compute_all_probabilities(self.theta, self.p)
+        all_probabilities = central_density.compute_all_probabilities(self.theta[0], self.p)
 
-        prob_observations = forward_vector[1, self.observations.size]
+        prob_observations = forward_vector[-1, 0]
         for i in range(1, self.transition_matrix_dim):
             # last observation, ith row
-            j = forward_vector[i, self.observations.size]
+            j = forward_vector[-1, i]
             if j > -np.inf:
                 prob_observations = j + np.log(1 + np.exp(prob_observations - j))
 
         for x in range(self.transition_matrix_dim):
             for y in range(self.transition_matrix_dim):
-                temp = forward_vector[x, 1] + np.log(self.initial_matrix[x, y]) + \
-                   np.log(all_probabilities[y, 1 + 1]) + backward_vector[y, 1 + 1]
-                for i in range(1,self.n_obs - 2):
-                    j = forward_vector[x, i] + np.log(self.initial_matrix[x, y]) + \
-                        np.log(all_probabilities[y, i + 1]) + backward_vector[y, i + 1]
+                temp = forward_vector[x, 0] + np.log(self.initial_matrix[x, y]) + \
+                   np.log(all_probabilities[y, 1]) + backward_vector[y, 1]
+                for i in range(1,self.n_obs - 1):
+                    j = forward_vector[i, x] + np.log(self.initial_matrix[x, y]) + \
+                        np.log(all_probabilities[i + 1, y]) + backward_vector[i + 1, y]
                     if j > -np.inf:
                         temp = j + np.log(1 + np.exp(temp - j))
                 temp = np.exp(temp - prob_observations)
@@ -114,14 +118,16 @@ class RecursiveBaumWelch():
         polynom_coefficients = self.compute_polynom_coefficients(transition_matrix)
         try:
             s = self.solve_for_s(polynom_coefficients)
-        except:
-            s = 0
+        except TypeError:
+            s = self.solve_for_s(polynom_coefficients)
+            print(f'Something went wrong with s solver')
         t = self.solve_for_t(s, polynom_coefficients)
-        if len(s) > 1:
+        if all(s == 0):
+            q = self.p / (1 - self.p) * s
+            optimal_transition_matrix = self.create_transition_matrix(s,t,q)
+        elif len(s) > 1:
             optimal_transition_matrix = self.find_optimal_transition_matrix(s,t)
         else:
             q = self.p / (1 - self.p) * s
             optimal_transition_matrix = self.create_transition_matrix(s,t,q)
-        updated_forward = forward.Forward(self.observations, self.transition_matrix_dim, optimal_transition_matrix, self.theta, self.p)
-        normalized_llk = updated_forward.compute_normalized_llk()
-        return optimal_transition_matrix, normalized_llk, s, t, updated_forward
+        return optimal_transition_matrix[0], optimal_transition_matrix[1], optimal_transition_matrix[2], optimal_transition_matrix[3], optimal_transition_matrix[4]

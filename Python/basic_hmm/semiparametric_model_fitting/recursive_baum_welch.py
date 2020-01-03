@@ -114,7 +114,6 @@ class RecursiveBaumWelch:
                         temp = j + np.log(1 + np.exp(temp - j))
                 temp = np.exp(temp - prob_observations)
                 transition_matrix[x, y] = temp
-
         polynom_coefficients = self.compute_polynom_coefficients(transition_matrix)
         try:
             s = self.solve_for_s(polynom_coefficients)
